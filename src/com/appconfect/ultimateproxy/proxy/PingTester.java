@@ -1,0 +1,27 @@
+package com.appconfect.ultimateproxy.proxy;
+
+import com.appconfect.ultimateproxy.network.BasicOperations;
+import org.apache.http.HttpHost;
+
+public class PingTester {
+
+
+    public static long testConnectivity(HttpHost host, int timeOut){
+
+
+        BasicOperations basicOperations = new BasicOperations(host,timeOut);
+        long start = System.currentTimeMillis();
+
+        try {
+            basicOperations.basicGET("https://blank.org/",false);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return -1;
+        }
+
+        long end = System.currentTimeMillis();
+        return end-start;
+
+    }
+
+}
