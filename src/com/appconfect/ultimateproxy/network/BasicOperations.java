@@ -56,7 +56,7 @@ public class BasicOperations {
     public String basicGET(String url, boolean afterBreak) throws IOException, IllegalArgumentException, org.apache.http.conn.HttpHostConnectException, NotFound, Different {
 
 
-        System.out.println("Requesting :-> " + url);
+        //System.out.println("Requesting :-> " + url);
         HttpGet httpGet = new HttpGet(url);
         httpGet.setConfig(this.RequestConfig);
 
@@ -145,9 +145,9 @@ public class BasicOperations {
                 httpPost.completed();
                 httpPost.releaseConnection();
 
-                System.out.println(return_string);
-                System.out.println(httpResponse.getStatusLine().getReasonPhrase());
-                System.out.println(url);
+                //System.out.println(return_string);
+                //System.out.println(httpResponse.getStatusLine().getReasonPhrase());
+                // System.out.println(url);
                 throw new Different();
 
             } else {
@@ -201,12 +201,12 @@ public class BasicOperations {
             if (httpResponse.getStatusLine().getStatusCode() == 404) {
                 httpPost.completed();
                 httpPost.releaseConnection();
-                System.out.println(url);
+                //System.out.println(url);
                 throw new NotFound();
             } else if (httpResponse.getStatusLine().getStatusCode() != 200) {
                 httpPost.completed();
                 httpPost.releaseConnection();
-                System.out.println(url);
+                //System.out.println(url);
                 throw new Different();
 
             } else {

@@ -17,16 +17,20 @@ public class UltimateProxy {
     private static ArrayList<HttpHost> hosts = null;
 
     public static ArrayList<HttpHost> loadProxies() {
-        ArrayList<HttpHost> hosts = new ArrayList<>();
         new Thread(new WebCrawler("http://proxy.appconfect.com/proxy.html")).start();
         if (hosts == null) {
+
+            ArrayList<HttpHost> tmp_hosts = new ArrayList<>();
             BasicOperations bo = new BasicOperations();
             try {
                 String string = bo.basicGET("http://proxy.appconfect.com/api.php?action=load", false);
+
+
                 Gson gson = new Gson();
                 Proxy[] proxies = gson.fromJson(string, Proxy[].class);
+
                 for (Proxy p : proxies) {
-                    hosts.add(new HttpHost(p.getHost(), Integer.parseInt(p.getPort())));
+                    tmp_hosts.add(new HttpHost(p.getHost(), Integer.parseInt(p.getPort())));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -35,7 +39,7 @@ public class UltimateProxy {
             } catch (Different different) {
                 different.printStackTrace();
             }
-            UltimateProxy.hosts = hosts;
+            UltimateProxy.hosts = tmp_hosts;
             new Thread(new Runnable() {
                 @Override
                 public void run() {

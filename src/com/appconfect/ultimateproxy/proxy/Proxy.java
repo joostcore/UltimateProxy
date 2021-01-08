@@ -22,4 +22,14 @@ public class Proxy {
     public String getSpeed() {
         return Speed;
     }
+
+    @Override
+    public String toString() {
+        return "Proxy{" +
+                "ID='" + ID + '\'' +
+                ", Host='" + Host + '\'' +
+                ", Port='" + Port + '\'' +
+                ", Speed='" + Speed + '\'' +
+                '}';
+    }
 }

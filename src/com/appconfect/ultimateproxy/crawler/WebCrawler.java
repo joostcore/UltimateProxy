@@ -42,7 +42,7 @@ public class WebCrawler implements Runnable {
         pairs.add(new BasicNameValuePair("port", "" + host.getPort()));
         pairs.add(new BasicNameValuePair("speed", "" + ProxyLoader.checkProxy(host)));
 
-        System.out.println(basicOperations.basicPost(pairs, "http://proxy.appconfect.com/api.php"));
+        //System.out.println(basicOperations.basicPost(pairs, "http://proxy.appconfect.com/api.php"));
     }
 
     private void start(String url) {

@@ -22,12 +22,12 @@ public class ProxyLoader {
 
                 for (HttpHost host : hosts) {
                     if (host.getHostName() != null) {
-                        System.out.println("Testing : " + host.getHostName());
+                        //System.out.println("Testing : " + host.getHostName());
                         long res = PingTester.testConnectivity(host, timeout);
                         if (res > timeout || res == -1) {
 
                         } else {
-                            System.out.println(host.getHostName() + " succeed ! with a score of " + res);
+                            //System.out.println(host.getHostName() + " succeed ! with a score of " + res);
 
                         }
                         try {
@@ -50,12 +50,12 @@ public class ProxyLoader {
         int timeout = 15000;
 
         if (host.getHostName() != null) {
-            System.out.println("Testing : " + host.getHostName());
+            //System.out.println("Testing : " + host.getHostName());
             long res = PingTester.testConnectivity(host, timeout);
             if (res > timeout || res == -1) {
 
             } else {
-                System.out.println(host.getHostName() + " succeed ! with a score of " + res);
+                //System.out.println(host.getHostName() + " succeed ! with a score of " + res);
 
                 return res;
             }
