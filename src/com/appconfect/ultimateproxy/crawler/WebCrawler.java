@@ -197,6 +197,11 @@ public class WebCrawler implements Runnable {
     public void run() {
         while (true) {
             start(this.start);
+            try {
+                Thread.sleep(3600000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
