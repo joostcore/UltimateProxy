@@ -27,7 +27,7 @@ public class BasicOperations {
     CookieMonster cookieMonster = new CookieMonster();
     HttpClient http = null;
     org.apache.http.client.config.RequestConfig RequestConfig;
-    int TIME_OUT = 100;
+    int TIME_OUT = 5000;
     HttpHost proxy = null;
 
     public BasicOperations(HttpHost proxy) {
@@ -53,10 +53,10 @@ public class BasicOperations {
     }
 
 
-    public String basicGET(String url, boolean afterBreak) throws IOException, org.apache.http.conn.HttpHostConnectException, NotFound, Different {
+    public String basicGET(String url, boolean afterBreak) throws IOException, IllegalArgumentException, org.apache.http.conn.HttpHostConnectException, NotFound, Different {
 
 
-        System.out.println("Requesting :-> "+url);
+        System.out.println("Requesting :-> " + url);
         HttpGet httpGet = new HttpGet(url);
         httpGet.setConfig(this.RequestConfig);
 
@@ -180,17 +180,15 @@ public class BasicOperations {
     }
 
 
-    public String basicPost(List<NameValuePair> params, String url) {
+    public String basicPost(List<NameValuePair> params, String url) throws IOException, NotFound, Different {
 
-        try {
-
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.setConfig(RequestConfig);
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setConfig(RequestConfig);
 
 
-            UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, "UTF-8");
-            urlEncodedFormEntity.setContentEncoding("utf-8");
-            httpPost.setEntity(urlEncodedFormEntity);
+        UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, "UTF-8");
+        urlEncodedFormEntity.setContentEncoding("utf-8");
+        httpPost.setEntity(urlEncodedFormEntity);
 
 
             //System.out.println(InputToString(httpPost.getEntity().getContent()));
@@ -217,27 +215,7 @@ public class BasicOperations {
                 return return_string;
             }
 
-        } catch (IOException | IndexOutOfBoundsException ns) {
-            //ns.printStackTrace();
-            try {
-                Thread.sleep(TIME_OUT);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-            return basicPost(params, url);
 
-        } catch (Different | NotFound e) {
-            e.printStackTrace();
-
-            //System.out.println(url);
-            //System.err.println("Es ist ein Fehler aufgetreten wir versuchen es erneut !");
-            try {
-                Thread.sleep(TIME_OUT);
-            } catch (InterruptedException e1) {
-            }
-            return basicPost(params, url);
-
-        }
     }
 
     public String InputToString(InputStream in) {
