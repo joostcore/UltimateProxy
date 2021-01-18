@@ -16,19 +16,14 @@ public class UltimateProxy {
 
     private static ArrayList<HttpHost> hosts = null;
 
-    public static ArrayList<HttpHost> loadProxies() {
-        new Thread(new WebCrawler("http://proxy.appconfect.com/proxy.html")).start();
+    public static synchronized ArrayList<HttpHost> loadProxies() {
         if (hosts == null) {
-
             ArrayList<HttpHost> tmp_hosts = new ArrayList<>();
             BasicOperations bo = new BasicOperations();
             try {
                 String string = bo.basicGET("http://proxy.appconfect.com/api.php?action=load", false);
-
-
                 Gson gson = new Gson();
                 Proxy[] proxies = gson.fromJson(string, Proxy[].class);
-
                 for (Proxy p : proxies) {
                     tmp_hosts.add(new HttpHost(p.getHost(), Integer.parseInt(p.getPort())));
                 }
@@ -40,17 +35,23 @@ public class UltimateProxy {
                 different.printStackTrace();
             }
             UltimateProxy.hosts = tmp_hosts;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ProxyLoader.checkAllProxys(UltimateProxy.hosts);
-                }
-            }).start();
+
+            Thread background_crawler_thread = new Thread(new WebCrawler("http://proxy.appconfect.com/proxy.html"));
+            background_crawler_thread.setDaemon(true);
+            background_crawler_thread.start();
+
+
+            ProxyLoader prxLoader = new ProxyLoader();
+            Thread background_proxy_test = new Thread(() -> prxLoader.checkAllProxys(UltimateProxy.hosts));
+            background_proxy_test.setDaemon(true);
+            background_proxy_test.start();
+
         } else {
             return UltimateProxy.hosts;
         }
         return hosts;
     }
+
 
     public static void reloadProxies() {
         hosts = null;

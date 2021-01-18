@@ -5,9 +5,7 @@ import com.appconfect.ultimateproxy.exceptions.NotFound;
 import com.appconfect.ultimateproxy.network.BasicOperations;
 import com.appconfect.ultimateproxy.proxy.ProxyLoader;
 import org.apache.http.HttpHost;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.message.BasicNameValuePair;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.tags.LinkTag;
@@ -21,39 +19,28 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebCrawler implements Runnable {
 
 
+    ProxyLoader proxyLoader;
     BasicOperations bo = new BasicOperations();
     ConcurrentHashMap<String, HttpHost> crawledProxies = new ConcurrentHashMap<>();
     ArrayList<String> visitedPages = new ArrayList<>();
     String start;
 
     public WebCrawler(String startUrl) {
+        proxyLoader = new ProxyLoader();
         start = startUrl;
-
-    }
-
-    public static void uploadNewProxy(HttpHost host) throws Different, IOException, NotFound {
-        BasicOperations basicOperations = new BasicOperations();
-        ArrayList<NameValuePair> pairs = new ArrayList<>();
-        pairs.add(new BasicNameValuePair("host", "" + host.getHostName()));
-        pairs.add(new BasicNameValuePair("port", "" + host.getPort()));
-        pairs.add(new BasicNameValuePair("speed", "" + ProxyLoader.checkProxy(host)));
-
-        //System.out.println(basicOperations.basicPost(pairs, "http://proxy.appconfect.com/api.php"));
     }
 
     private void start(String url) {
         if (!isInVisitedPages(url)) {
             addToVisitedPages(url);
             try {
-                ArrayList<NameValuePair> pairs = new ArrayList<>();
-                BasicNameValuePair pair = new BasicNameValuePair("query", "Free+Proxy+List+txt");
-                pairs.add(pair);
                 String response = null;
-                //response = bo.basicPost(pairs, url);
                 response = bo.basicGET(url, false);
                 List<String> links = null;
                 try {
@@ -121,19 +108,11 @@ public class WebCrawler implements Runnable {
             try {
                 response = bo.basicGET(url, false);
 
-                ArrayList<HttpHost> crawled = ProxyLoader.scrapeFromString(response);
+                ArrayList<HttpHost> crawled = scrapeFromString(response);
 
                 for (HttpHost host : crawled) {
-                    try {
-                        uploadNewProxy(host);
-                    } catch (IOException | IllegalArgumentException e) {
-                        // e.printStackTrace();
-                    } catch (NotFound notFound) {
-                        // notFound.printStackTrace();
-                    } catch (Different different) {
-                        //different.printStackTrace();
-                    }
-
+                    proxyLoader.checkProxy(host);
+                    //addToCrawledHosts(host);
                 }
 
                 List<String> links = null;
@@ -169,6 +148,28 @@ public class WebCrawler implements Runnable {
 
         }
 
+    }
+
+    private ArrayList<HttpHost> scrapeFromString(String string) {
+
+        ArrayList<HttpHost> hosts = new ArrayList<>();
+
+        Pattern ip_pattern = Pattern.compile("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}(:|<\\/td><td>)[0-9]{1,5}");
+        //Pattern ip_pattern = Pattern.compile("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
+        //Pattern port_pattern = Pattern.compile("[0-9]{2,5}");
+        Matcher ip_matcher = ip_pattern.matcher(string);
+        //Matcher port_matcher = port_pattern.matcher(string);
+        while (ip_matcher.find()) {
+            String adress = ip_matcher.group();
+            adress = adress.replace("</td><td>", ":");
+            String[] inet = adress.split(":");
+            adress = inet[0];
+            int port = Integer.parseInt(inet[1]);
+            HttpHost host = new HttpHost(adress, port, "http");
+
+            hosts.add(host);
+        }
+        return hosts;
     }
 
     private String getDomainName(String url) throws NotParsebleException {

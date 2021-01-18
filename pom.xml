@@ -17,18 +17,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>joostcore</groupId>
-    <artifactId>.email</artifactId>
+    <artifactId>ultimate_proxy</artifactId>
     <version>1.0-SNAPSHOT</version>
 
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
@@ -54,6 +47,4 @@
             <version>2.8.6</version>
         </dependency>
     </dependencies>
-
-
 </project>

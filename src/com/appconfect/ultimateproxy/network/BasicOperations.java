@@ -191,29 +191,29 @@ public class BasicOperations {
         httpPost.setEntity(urlEncodedFormEntity);
 
 
-            //System.out.println(InputToString(httpPost.getEntity().getContent()));
-            HttpResponse httpResponse = http.execute(httpPost);
+        //System.out.println(InputToString(httpPost.getEntity().getContent()));
+        HttpResponse httpResponse = http.execute(httpPost);
 
-            String return_string = InputToString(httpResponse.getEntity().getContent());
+        String return_string = InputToString(httpResponse.getEntity().getContent());
 
-            httpResponse.getEntity().getContent().close();
+        httpResponse.getEntity().getContent().close();
 
-            if (httpResponse.getStatusLine().getStatusCode() == 404) {
-                httpPost.completed();
-                httpPost.releaseConnection();
-                //System.out.println(url);
-                throw new NotFound();
-            } else if (httpResponse.getStatusLine().getStatusCode() != 200) {
-                httpPost.completed();
-                httpPost.releaseConnection();
-                //System.out.println(url);
-                throw new Different();
+        if (httpResponse.getStatusLine().getStatusCode() == 404) {
+            httpPost.completed();
+            httpPost.releaseConnection();
+            //System.out.println(url);
+            throw new NotFound();
+        } else if (httpResponse.getStatusLine().getStatusCode() != 200) {
+            httpPost.completed();
+            httpPost.releaseConnection();
+            //System.out.println(url);
+            throw new Different();
 
-            } else {
-                httpPost.completed();
-                httpPost.releaseConnection();
-                return return_string;
-            }
+        } else {
+            httpPost.completed();
+            httpPost.releaseConnection();
+            return return_string;
+        }
 
 
     }
