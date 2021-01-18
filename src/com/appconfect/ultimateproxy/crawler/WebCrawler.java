@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +32,8 @@ public class WebCrawler implements Runnable {
     ConcurrentHashMap<String, HttpHost> crawledProxies = new ConcurrentHashMap<>();
     ArrayList<String> visitedPages = new ArrayList<>();
     String start;
+
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
 
     public WebCrawler(String startUrl) {
         proxyLoader = new ProxyLoader();
@@ -54,16 +58,18 @@ public class WebCrawler implements Runnable {
                                 String finalSub_url = sub_url;
 
                                 if (sub_url.contains("proxy") || sub_url.contains("Proxy")) {
-                                    new Thread(new Runnable() {
+                                    executor.execute(new Runnable() {
                                         @Override
                                         public void run() {
+
                                             try {
                                                 follow(encodeValue(finalSub_url));
                                             } catch (URISyntaxException e) {
                                                 e.printStackTrace();
                                             }
+
                                         }
-                                    }).start();
+                                    });
                                 }
                             } catch (NotParsebleException ex) {
                                 //System.out.println("Could not be parsed :" + sub_url);
@@ -81,6 +87,7 @@ public class WebCrawler implements Runnable {
                 different.printStackTrace();
             }
         }
+
     }
 
     public static List<String> getLinksOnPage(final String htmlBody) throws ParserException {
@@ -199,7 +206,7 @@ public class WebCrawler implements Runnable {
         while (true) {
             start(this.start);
             try {
-                Thread.sleep(3600000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

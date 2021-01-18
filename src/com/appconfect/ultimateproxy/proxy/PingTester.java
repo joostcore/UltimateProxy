@@ -5,9 +5,7 @@ import org.apache.http.HttpHost;
 
 public class PingTester {
 
-
     public static long testConnectivity(HttpHost host, int timeOut) {
-
 
         BasicOperations basicOperations = new BasicOperations(host, timeOut);
         long start = System.currentTimeMillis();
