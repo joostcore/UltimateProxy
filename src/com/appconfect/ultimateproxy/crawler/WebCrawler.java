@@ -33,7 +33,7 @@ public class WebCrawler implements Runnable {
     ArrayList<String> visitedPages = new ArrayList<>();
     String start;
 
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
 
     public WebCrawler(String startUrl) {
         proxyLoader = new ProxyLoader();
@@ -61,13 +61,11 @@ public class WebCrawler implements Runnable {
                                     executor.execute(new Runnable() {
                                         @Override
                                         public void run() {
-
                                             try {
                                                 follow(encodeValue(finalSub_url));
                                             } catch (URISyntaxException e) {
                                                 e.printStackTrace();
                                             }
-
                                         }
                                     });
                                 }
@@ -119,9 +117,7 @@ public class WebCrawler implements Runnable {
 
                 for (HttpHost host : crawled) {
                     proxyLoader.checkProxy(host);
-                    //addToCrawledHosts(host);
                 }
-
                 List<String> links = null;
                 try {
                     links = getLinksOnPage(response);
@@ -133,9 +129,19 @@ public class WebCrawler implements Runnable {
                                     sub_url = "https://" + getDomainName(url) + sub_url;
                                 }
                                 if ((sub_url.contains("proxy") || sub_url.contains("Proxy")) && !sub_url.contains("facebook.com") && !sub_url.contains("wikipedia.org")) {
-                                    follow(encodeValue(sub_url));
+                                    String finalSub_url = sub_url;
+                                    executor.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                follow(encodeValue(finalSub_url));
+                                            } catch (URISyntaxException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
                                 }
-                            } catch (NotParsebleException | URISyntaxException ex) {
+                            } catch (NotParsebleException ex) {
                                 //System.out.println("Could not be parsed :" + sub_url);
                             }
                         }
@@ -152,9 +158,7 @@ public class WebCrawler implements Runnable {
             } catch (Different different) {
                 //different.printStackTrace();
             }
-
         }
-
     }
 
     private ArrayList<HttpHost> scrapeFromString(String string) {

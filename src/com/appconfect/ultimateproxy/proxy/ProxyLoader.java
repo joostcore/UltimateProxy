@@ -9,13 +9,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class ProxyLoader {
-
-
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
 
 
     public void uploadNewProxy(HttpHost host, long speed) throws Different, IOException, NotFound {
@@ -36,28 +31,23 @@ public class ProxyLoader {
     }
 
     public void checkProxy(HttpHost host) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                int timeout = 15000;
-                if (host.getHostName() != null) {
-                    long res = PingTester.testConnectivity(host, timeout);
-                    if (res > timeout || res == -1) {
+        int timeout = 15000;
+        if (host.getHostName() != null) {
+            long res = PingTester.testConnectivity(host, timeout);
+            if (res > timeout || res == -1) {
 
-                    } else {
-                        System.out.println(host.getHostName() + " succeed ! with a score of " + res);
-                    }
-                    try {
-                        uploadNewProxy(host, res);
-                    } catch (Different different) {
-                        different.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (NotFound notFound) {
-                        notFound.printStackTrace();
-                    }
-                }
+            } else {
+                System.out.println(host.getHostName() + " succeed ! with a score of " + res);
             }
-        });
+            try {
+                uploadNewProxy(host, res);
+            } catch (Different different) {
+                different.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NotFound notFound) {
+                notFound.printStackTrace();
+            }
+        }
     }
 }
