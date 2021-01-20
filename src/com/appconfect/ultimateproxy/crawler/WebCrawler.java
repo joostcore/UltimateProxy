@@ -108,13 +108,14 @@ public class WebCrawler implements Runnable {
 
     private void follow(String url) {
         if (!isInVisitedPages(url)) {
+
             addToVisitedPages(url);
             String response = null;
             try {
                 response = bo.basicGET(url, false);
 
                 ArrayList<HttpHost> crawled = scrapeFromString(response);
-
+                System.out.println("visited : " + url + " found " + crawled.size() + " Proxies !");
                 for (HttpHost host : crawled) {
                     proxyLoader.checkProxy(host);
                 }
@@ -149,8 +150,6 @@ public class WebCrawler implements Runnable {
                 } catch (ParserException e) {
                     // e.printStackTrace();
                 }
-
-
             } catch (IOException e) {
                 // e.printStackTrace();
             } catch (NotFound notFound) {

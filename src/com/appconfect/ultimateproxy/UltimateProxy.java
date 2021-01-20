@@ -11,14 +11,10 @@ import org.apache.http.HttpHost;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class UltimateProxy {
 
     private static ArrayList<HttpHost> hosts = null;
-
-    ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(16);
 
     public static synchronized ArrayList<HttpHost> loadProxies() {
         if (hosts == null) {
@@ -52,7 +48,7 @@ public class UltimateProxy {
                 }
             });
             background_proxy_test.setDaemon(true);
-            //background_proxy_test.start();
+            background_proxy_test.start();
 
         } else {
             return UltimateProxy.hosts;
