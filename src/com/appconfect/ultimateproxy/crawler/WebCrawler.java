@@ -33,8 +33,8 @@ public class WebCrawler implements Runnable {
     ArrayList<String> visitedPages = new ArrayList<>();
     String start;
 
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
 
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
     public WebCrawler(String startUrl) {
         proxyLoader = new ProxyLoader();
         start = startUrl;

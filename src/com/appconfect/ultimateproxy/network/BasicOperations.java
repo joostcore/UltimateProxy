@@ -27,7 +27,7 @@ public class BasicOperations {
     CookieMonster cookieMonster = new CookieMonster();
     HttpClient http = null;
     org.apache.http.client.config.RequestConfig RequestConfig;
-    int TIME_OUT = 5000;
+    int TIME_OUT = 15000;
     HttpHost proxy = null;
 
     public BasicOperations(HttpHost proxy) {
