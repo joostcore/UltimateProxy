@@ -6,6 +6,11 @@ public class Proxy {
     String Port;
     String Speed;
 
+    public Proxy(String host, String port, String speed) {
+        Host = host;
+        Port = port;
+        Speed = speed;
+    }
 
     public String getID() {
         return ID;

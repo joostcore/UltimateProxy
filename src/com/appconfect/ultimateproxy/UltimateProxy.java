@@ -44,7 +44,7 @@ public class UltimateProxy {
             ProxyLoader prxLoader = new ProxyLoader();
             Thread background_proxy_test = new Thread(() -> {
                 while (true) {
-                    prxLoader.checkAllProxys(UltimateProxy.hosts);
+                    prxLoader.checkProxies(UltimateProxy.hosts);
                 }
             });
             background_proxy_test.setDaemon(true);
@@ -57,7 +57,7 @@ public class UltimateProxy {
     }
 
 
-    public static void reloadProxies() {
+    public static synchronized void reloadProxies() {
         hosts = null;
         hosts = loadProxies();
     }

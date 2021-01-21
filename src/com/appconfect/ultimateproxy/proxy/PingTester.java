@@ -21,5 +21,4 @@ public class PingTester {
         return end - start;
 
     }
-
 }

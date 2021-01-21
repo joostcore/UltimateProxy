@@ -3,6 +3,7 @@ package com.appconfect.ultimateproxy.proxy;
 import com.appconfect.ultimateproxy.exceptions.Different;
 import com.appconfect.ultimateproxy.exceptions.NotFound;
 import com.appconfect.ultimateproxy.network.BasicOperations;
+import com.google.gson.Gson;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,16 +23,52 @@ public class ProxyLoader {
         basicOperations.basicPost(pairs, "http://proxy.appconfect.com/api.php");
     }
 
-    public void checkAllProxys(ArrayList<HttpHost> hosts) {
+    public void uploadProxyList(ArrayList<Proxy> host) throws Different, IOException, NotFound {
+        if (host.size() > 0) {
 
-        for (HttpHost host : hosts) {
-            checkProxy(host);
+
+            Proxy[] encodedProxies = new Proxy[host.size()];
+            for (int i = 0; i < host.size(); i++) {
+                encodedProxies[i] = host.get(i);
+            }
+
+            BasicOperations basicOperations = new BasicOperations();
+            ArrayList<NameValuePair> pairs = new ArrayList<>();
+            Gson gson = new Gson();
+            pairs.add(new BasicNameValuePair("proxy_list", "" + gson.toJson(encodedProxies)));
+            basicOperations.basicPost(pairs, "http://proxy.appconfect.com/api.php");
         }
+    }
 
+
+    public void checkProxies(ArrayList<HttpHost> hosts) {
+
+        ArrayList<Proxy> proxies = new ArrayList<>();
+        for (HttpHost host : hosts) {
+            int timeout = 5000;
+            if (host.getHostName() != null) {
+                long res = PingTester.testConnectivity(host, timeout);
+                if (res > timeout || res == -1) {
+
+                } else {
+                    System.out.println(host.getHostName() + " succeed ! with a score of " + res);
+                }
+                proxies.add(new Proxy(host.getHostName(), host.getPort() + "", res + ""));
+            }
+        }
+        try {
+            uploadProxyList(proxies);
+        } catch (Different different) {
+            different.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NotFound notFound) {
+            notFound.printStackTrace();
+        }
     }
 
     public void checkProxy(HttpHost host) {
-        int timeout = 15000;
+        int timeout = 7500;
         if (host.getHostName() != null) {
             long res = PingTester.testConnectivity(host, timeout);
             if (res > timeout || res == -1) {

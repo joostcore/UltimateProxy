@@ -40,53 +40,6 @@ public class WebCrawler implements Runnable {
         start = startUrl;
     }
 
-    private void start(String url) {
-        if (!isInVisitedPages(url)) {
-            addToVisitedPages(url);
-            try {
-                String response = null;
-                response = bo.basicGET(url, false);
-                List<String> links = null;
-                try {
-                    links = getLinksOnPage(response);
-                    for (String sub_url : links) {
-                        if (sub_url.length() > 0) {
-                            try {
-                                if (sub_url.charAt(0) == '/') {
-                                    sub_url = "https://" + getDomainName(url) + sub_url;
-                                }
-                                String finalSub_url = sub_url;
-
-                                if (sub_url.contains("proxy") || sub_url.contains("Proxy")) {
-                                    executor.execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                follow(encodeValue(finalSub_url));
-                                            } catch (URISyntaxException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-                                }
-                            } catch (NotParsebleException ex) {
-                                //System.out.println("Could not be parsed :" + sub_url);
-                            }
-                        }
-                    }
-                } catch (ParserException e) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NotFound notFound) {
-                notFound.printStackTrace();
-            } catch (Different different) {
-                different.printStackTrace();
-            }
-        }
-
-    }
 
     public static List<String> getLinksOnPage(final String htmlBody) throws ParserException {
         final Parser htmlParser = new Parser(htmlBody);
@@ -113,12 +66,9 @@ public class WebCrawler implements Runnable {
             String response = null;
             try {
                 response = bo.basicGET(url, false);
-
                 ArrayList<HttpHost> crawled = scrapeFromString(response);
                 System.out.println("visited : " + url + " found " + crawled.size() + " Proxies !");
-                for (HttpHost host : crawled) {
-                    proxyLoader.checkProxy(host);
-                }
+                proxyLoader.checkProxies(crawled);
                 List<String> links = null;
                 try {
                     links = getLinksOnPage(response);
@@ -137,7 +87,8 @@ public class WebCrawler implements Runnable {
                                             try {
                                                 follow(encodeValue(finalSub_url));
                                             } catch (URISyntaxException e) {
-                                                e.printStackTrace();
+                                                //  e.printStackTrace();
+                                                System.out.println("Could not parse - " + finalSub_url);
                                             }
                                         }
                                     });
@@ -207,7 +158,7 @@ public class WebCrawler implements Runnable {
     @Override
     public void run() {
         while (true) {
-            start(this.start);
+            follow(this.start);
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
