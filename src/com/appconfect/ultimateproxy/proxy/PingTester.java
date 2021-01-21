@@ -8,8 +8,8 @@ public class PingTester {
     public static long testConnectivity(HttpHost host, int timeOut) {
 
         BasicOperations basicOperations = new BasicOperations(host, timeOut);
+        System.out.println("Testing : " + host.getHostName() + ":" + host.getPort());
         long start = System.currentTimeMillis();
-
         try {
             basicOperations.basicGET("https://blank.org/", false);
         } catch (Exception e) {
