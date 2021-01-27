@@ -47,7 +47,14 @@ public class ProxyLoader {
         for (HttpHost host : hosts) {
             int timeout = 5000;
             if (host.getHostName() != null) {
-                long res = PingTester.testConnectivity(host, timeout);
+                //Intensive Check of Proxy
+                long res1 = PingTester.testConnectivity(host, timeout);
+                long res2 = PingTester.testConnectivity(host, timeout);
+                long res3 = PingTester.testConnectivity(host, timeout);
+                long res4 = PingTester.testConnectivity(host, timeout);
+                long res5 = PingTester.testConnectivity(host, timeout);
+                long res = (res1 + res2 + res3 + res4 + res5) / 5;
+
                 if (res > timeout || res == -1) {
 
                 } else {

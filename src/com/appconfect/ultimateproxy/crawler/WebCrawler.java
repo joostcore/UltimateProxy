@@ -37,7 +37,7 @@ public class WebCrawler implements Runnable {
 
     ThreadPoolExecutor executor;
     public WebCrawler(String startUrl) {
-        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8, new ThreadFactory() {
+        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(32, new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r);
@@ -76,7 +76,9 @@ public class WebCrawler implements Runnable {
             try {
                 response = bo.basicGET(url);
                 ArrayList<HttpHost> crawled = scrapeFromString(response);
-                System.out.println("visited : " + url + " found " + crawled.size() + " Proxies !");
+                if (crawled.size() > 0) {
+                    System.out.println("visited : " + url + " found " + crawled.size() + " Proxies !");
+                }
                 proxyLoader.checkProxies(crawled);
                 List<String> links = null;
                 try {

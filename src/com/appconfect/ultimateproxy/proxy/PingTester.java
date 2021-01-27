@@ -8,7 +8,6 @@ public class PingTester {
     public static long testConnectivity(HttpHost host, int timeOut) {
 
         BasicOperations basicOperations = new BasicOperations(host, timeOut);
-        System.out.println("Testing : " + host.getHostName() + ":" + host.getPort());
         long start = System.currentTimeMillis();
         try {
             basicOperations.basicGET("http://proxy.appconfect.com/proxy-as-list.php");
@@ -16,7 +15,6 @@ public class PingTester {
             //e.printStackTrace();
             return Integer.MAX_VALUE;
         }
-
         long end = System.currentTimeMillis();
         return end - start;
 
