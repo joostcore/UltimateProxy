@@ -36,7 +36,7 @@ public class UltimateProxy {
             }
             UltimateProxy.hosts = tmp_hosts;
 
-            Thread background_crawler_thread = new Thread(new WebCrawler("http://proxy.appconfect.com/proxy.html"));
+            Thread background_crawler_thread = new Thread(new WebCrawler("https://raw.githubusercontent.com/joostcore/UltimateProxy/master/proxy.html"));
             background_crawler_thread.setDaemon(true);
             background_crawler_thread.setPriority(Thread.MAX_PRIORITY);
             background_crawler_thread.start();

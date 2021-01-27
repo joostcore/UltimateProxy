@@ -11,7 +11,7 @@ public class PingTester {
         System.out.println("Testing : " + host.getHostName() + ":" + host.getPort());
         long start = System.currentTimeMillis();
         try {
-            basicOperations.basicGET("https://www.wieistmeineip.de/");
+            basicOperations.basicGET("http://proxy.appconfect.com/proxy-as-list.php");
         } catch (Exception e) {
             //e.printStackTrace();
             return Integer.MAX_VALUE;
