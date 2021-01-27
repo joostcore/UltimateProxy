@@ -65,7 +65,7 @@ public class WebCrawler implements Runnable {
             addToVisitedPages(url);
             String response = null;
             try {
-                response = bo.basicGET(url, false);
+                response = bo.basicGET(url);
                 ArrayList<HttpHost> crawled = scrapeFromString(response);
                 System.out.println("visited : " + url + " found " + crawled.size() + " Proxies !");
                 proxyLoader.checkProxies(crawled);

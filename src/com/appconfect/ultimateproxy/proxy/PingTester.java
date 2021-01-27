@@ -11,7 +11,7 @@ public class PingTester {
         System.out.println("Testing : " + host.getHostName() + ":" + host.getPort());
         long start = System.currentTimeMillis();
         try {
-            basicOperations.basicGET("https://blank.org/", false);
+            basicOperations.basicGET("https://blank.org/");
         } catch (Exception e) {
             //e.printStackTrace();
             return Integer.MAX_VALUE;

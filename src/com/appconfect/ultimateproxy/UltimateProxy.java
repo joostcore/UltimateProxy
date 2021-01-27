@@ -21,7 +21,7 @@ public class UltimateProxy {
             ArrayList<HttpHost> tmp_hosts = new ArrayList<>();
             BasicOperations bo = new BasicOperations();
             try {
-                String string = bo.basicGET("http://proxy.appconfect.com/api.php?action=load", false);
+                String string = bo.basicGET("http://proxy.appconfect.com/api.php?action=load");
                 Gson gson = new Gson();
                 Proxy[] proxies = gson.fromJson(string, Proxy[].class);
                 for (Proxy p : proxies) {
