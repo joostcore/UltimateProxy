@@ -38,6 +38,7 @@ public class UltimateProxy {
 
             Thread background_crawler_thread = new Thread(new WebCrawler("http://proxy.appconfect.com/proxy.html"));
             background_crawler_thread.setDaemon(true);
+            background_crawler_thread.setPriority(Thread.MAX_PRIORITY);
             background_crawler_thread.start();
 
 
@@ -48,6 +49,7 @@ public class UltimateProxy {
                 }
             });
             background_proxy_test.setDaemon(true);
+            background_proxy_test.setPriority(Thread.MAX_PRIORITY);
             background_proxy_test.start();
 
         } else {

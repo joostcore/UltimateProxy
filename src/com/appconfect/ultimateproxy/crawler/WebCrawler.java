@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,8 +35,16 @@ public class WebCrawler implements Runnable {
     String start;
 
 
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
+    ThreadPoolExecutor executor;
     public WebCrawler(String startUrl) {
+        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(8, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setPriority(Thread.MAX_PRIORITY);
+                return thread;
+            }
+        });
         proxyLoader = new ProxyLoader();
         start = startUrl;
     }
