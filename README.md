@@ -6,7 +6,7 @@ Ultimate Proxy is an social libary for crawling proxies and rating their quality
 
 There is an central server wich manages all proxies ever crawled.
 On using the libary method you donate two threads two the network.
-This threads are crawling and testing new proxies two the network.
+This threads are crawling and testing new proxies to the network.
 The crawled proxies are going to be posted back to the server. In this way
 this libary can provide high quality proxies very fast.
 ```java
